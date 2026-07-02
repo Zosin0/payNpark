@@ -3,8 +3,8 @@ import { View, StyleSheet, Dimensions, Text, TouchableOpacity, Image, ScrollView
 import { WebView } from 'react-native-webview';
 import * as Location from 'expo-location';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import apiClient from '../src/api/client';
 
 const MapScreen = () => {
   const [location, setLocation] = useState(null);
@@ -36,7 +36,7 @@ const MapScreen = () => {
 
   const fetchVehicles = async () => {
     try {
-      const response = await axios.get('http://192.168.0.34:5000/api/v1/veiculo');
+      const response = await apiClient.get('/veiculo');
       setVehicles(response.data.vehicles);
     } catch (error) {
       console.error('Error fetching vehicles:', error);
@@ -45,7 +45,7 @@ const MapScreen = () => {
 
   const fetchEstacionamentos = async () => {
     try {
-      const response = await axios.get('http://192.168.0.34:5000/api/v1/estacionamentos');
+      const response = await apiClient.get('/estacionamentos');
       setEstacionamentos(response.data);
     } catch (error) {
       console.error('Error fetching estacionamentos:', error);
@@ -64,7 +64,7 @@ const MapScreen = () => {
   };
 
   const generateMapHTML = (latitude, longitude, vehicleLatitude, vehicleLongitude, estacionamentos) => {
-    const apiKey = 'AIzaSyBetTEVFbh__xVtKrgBjZ5JaTCbnRcml40';
+    const apiKey = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
     const estacionamentosMarkers = estacionamentos.map(estacionamento => `
       var marker = new google.maps.Marker({
         position: {lat: ${estacionamento.latitude}, lng: ${estacionamento.longitude}},

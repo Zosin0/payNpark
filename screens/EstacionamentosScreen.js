@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
-import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
+import apiClient from '../src/api/client';
 
 const EstacionamentosScreen = () => {
   const [estacionamentos, setEstacionamentos] = useState([]);
@@ -13,7 +13,7 @@ const EstacionamentosScreen = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://192.168.0.34:5000/api/v1/estacionamentos');
+      const response = await apiClient.get('/estacionamentos');
       const data = response.data;
       setEstacionamentos(data);
     } catch (error) {

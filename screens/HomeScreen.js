@@ -5,31 +5,19 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import MenuHamburger from '../components/MenuHamburger';
 import CenteredFooter from '../components/Footer';
 import QRCode from 'react-native-qrcode-svg';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
 import * as Location from 'expo-location';
+import apiClient from '../src/api/client';
 
 const Home = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const [qrCode, setQrCode] = useState(null);
   const [vehicleLocation, setVehicleLocation] = useState(null);
-  const [token, setToken] = useState(null);
   const [isQrCodeRead, setIsQrCodeRead] = useState(false);
   const [vehicles, setVehicles] = useState([]);
 
   useEffect(() => {
     fetchVehicles();
-    const loadToken = async () => {
-      try {
-        const token = await AsyncStorage.getItem('token');
-        setToken(token);
-      } catch (error) {
-        console.error('Erro ao carregar o token:', error);
-      }
-    };
-    loadToken();
-
 
     if (route.params?.qrCode) {
       setQrCode(route.params.qrCode);
@@ -45,7 +33,7 @@ const Home = () => {
 
   const fetchVehicles = async () => {
     try {
-      const response = await axios.get('http://192.168.0.34:5000/api/v1/veiculo');
+      const response = await apiClient.get('/veiculo');
       setVehicles(response.data.vehicles);
     } catch (error) {
       console.error('Error fetching vehicles:', error);
@@ -82,19 +70,11 @@ const Home = () => {
   const startParkingSession = async () => {
     const brazilDateTime = new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
     try {
-      const response = await axios.post(
-        'http://192.168.0.34:5000/api/v1/salvarQRCode',
-        { brazilDateTime },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
+      const response = await apiClient.post('/salvarQRCode', { brazilDateTime });
       const data = response.data;
       if (data.success) {
-        await AsyncStorage.setItem('token', response.data.qr_code);
-        navigation.navigate('PayStep'); // Navega para a tela de estacionamento
+        setQrCode(data.qr_code);
+        navigation.navigate('PayStep');
       } else {
         console.error('Erro ao iniciar sessão:', data.message);
       }

@@ -1,44 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Image, Text, TouchableOpacity } from 'react-native';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location';
 import MenuHamburger from '../components/MenuHamburger';
 import CenteredFooter from '../components/Footer';
+import apiClient from '../src/api/client';
 
-const SessionScreen = ({ navigation, setIsUserLoggedIn }) => {
+const SessionScreen = ({ navigation }) => {
     const [vehicleLocation, setVehicleLocation] = useState(null);
-    const [token, setToken] = useState(null);
-
-    useEffect(() => {
-        const loadToken = async () => {
-            try {
-                const token = await AsyncStorage.getItem('token');
-                setToken(token);
-            } catch (error) {
-                console.error('Erro ao carregar o token:', error);
-            }
-        };
-        loadToken();
-    }, []);
 
     const startParkingSession = async () => {
         const brazilDateTime = new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
         try {
-            const response = await axios.post(
-                'http://192.168.0.34:5000/api/v1/salvarQRCode',
-                { brazilDateTime },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            const response = await apiClient.post('/salvarQRCode', { brazilDateTime });
             const data = response.data;
             if (data.success) {
-                await AsyncStorage.setItem('token', response.data.qr_code);
-                navigation.navigate('PayStep'); // Navega para a tela de estacionamento
+                navigation.navigate('PayStep', { qrCode: data.qr_code });
             } else {
                 console.error('Erro ao iniciar sessão:', data.message);
             }

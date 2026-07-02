@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, StyleSheet, Image } from 'react-native';
-import axios from 'axios';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
 import Icon from 'react-native-vector-icons/Entypo';
+import apiClient from '../src/api/client';
 
 const RegisterScreen = ({  }) => {
   const [email, setEmail] = useState('');
@@ -20,7 +20,7 @@ const RegisterScreen = ({  }) => {
         return;
       }
 
-      const response = await axios.post('http://localhost:5000/api/v1/register', { email, password });
+      const response = await apiClient.post('/register', { email, password });
       const data = response.data;
       if (data.success) {
         navigation.navigate('Login')

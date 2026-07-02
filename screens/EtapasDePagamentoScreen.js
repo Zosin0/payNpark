@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Image, Text, TouchableOpacity, Modal, ActivityIndicator } from 'react-native';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import QRCode from 'react-native-qrcode-svg';
 import { useNavigation } from '@react-navigation/native';
 import { WebView } from 'react-native-webview';
+import apiClient from '../src/api/client';
 
 const PaySteps = () => {
   const [valorAPagar, setValorAPagar] = useState(0);
@@ -19,12 +18,7 @@ const PaySteps = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = await AsyncStorage.getItem('token');
-        const response = await axios.get('http://192.168.0.34:5000/api/v1/pagarEstacionamento', {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
+        const response = await apiClient.get('/pagarEstacionamento');
         const data = response.data;
         if (data.success) {
           setValorAPagar(data.valor);
@@ -49,16 +43,7 @@ const PaySteps = () => {
   const finalizarPagamento = async () => {
     setLoading(true);
     try {
-      const token = await AsyncStorage.getItem('token');
-      const response = await axios.post(
-        'http://192.168.0.34:5000/api/v1/pagarEstacionamento',
-        { valor: valorAPagar },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
+      const response = await apiClient.post('/pagarEstacionamento', { valor: valorAPagar });
 
       const data = response.data;
       if (data.success) {
@@ -75,7 +60,7 @@ const PaySteps = () => {
 
   const checkPaymentStatus = async () => {
     try {
-      const response = await axios.get('http://192.168.0.34:5000/api/v1/pagamentoConfirmado');
+      const response = await apiClient.get('/pagamentoConfirmado');
       const data = response.data;
       if (data.success) {
         setQrCodeData(data.qr_code);

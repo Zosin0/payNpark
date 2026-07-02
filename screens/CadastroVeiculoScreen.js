@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, StyleSheet, Alert } from 'react-native';
-import axios from 'axios';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MenuHamburger from '../components/MenuHamburger';
 import CenteredFooter from '../components/Footer';
+import apiClient from '../src/api/client';
 
 const CadastroVeiculoScreen = ({ navigation }) => {
     const [name, setName] = useState('');
@@ -14,7 +14,7 @@ const CadastroVeiculoScreen = ({ navigation }) => {
 
     const handleSubmit = async () => {
         try {
-            const response = await axios.post('http://192.168.0.34:5000/api/v1/veiculo', {
+            const response = await apiClient.post('/veiculo', {
                 name, placa, marca, modelo, ano
             });
             if (response.data.success) {

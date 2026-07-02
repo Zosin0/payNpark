@@ -1,27 +1,26 @@
 // LoginScreen.js
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, StyleSheet, Image } from 'react-native';
-import axios from 'axios';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
 import Icon from 'react-native-vector-icons/Entypo'; // Importe o conjunto de ícones Ionicons
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import apiClient from '../src/api/client';
+import { useAuth } from '../src/context/AuthContext';
 
 
-const LoginScreen = ({ setIsUserLoggedIn }) => {
+const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigation = useNavigation(); // Use useNavigation hook to get navigation object
+  const { login } = useAuth();
 
   const handleLogin = async () => {
 
     try {
-      const response = await axios.post('http://localhost:5000/api/v1/login', { email, password });
+      const response = await apiClient.post('/login', { email, password });
       const data = response.data;
       if (data.success) {
-        console.log('Usuário autenticado com sucesso:', data.message);
-        await AsyncStorage.setItem('token', response.data.token);
-        setIsUserLoggedIn(true);
+        await login(data.token);
         navigation.navigate('HomeLoggedIn');
       } else {
         console.error('Erro ao logar:', data.message);
