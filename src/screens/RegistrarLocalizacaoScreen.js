@@ -18,11 +18,11 @@ const RegistrarLocalizacao = ({ navigation }) => {
                     <Text>Selecionar VEICULO</Text>
                     <View style={styles.containerCar}>
                         <View style={styles.containerImage}>
-                            <Image source={require('../assets/images/carro.png')}></Image>
+                            <Image source={require('../../assets/images/carro.png')}></Image>
                             <Text>Apelido Carro</Text>
                         </View>
                         <View style={styles.containerImage}>
-                            <Image source={require('../assets/images/carro.png')}></Image>
+                            <Image source={require('../../assets/images/carro.png')}></Image>
                             <Text>Apelido Carro</Text>
                         </View>
                     </View>

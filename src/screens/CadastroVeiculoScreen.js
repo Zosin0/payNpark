@@ -3,7 +3,7 @@ import { View, TextInput, TouchableOpacity, Text, StyleSheet, Alert } from 'reac
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MenuHamburger from '../components/MenuHamburger';
 import CenteredFooter from '../components/Footer';
-import apiClient from '../src/api/client';
+import apiClient from '../api/client';
 
 const CadastroVeiculoScreen = ({ navigation }) => {
     const [name, setName] = useState('');

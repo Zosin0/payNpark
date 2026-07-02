@@ -4,8 +4,8 @@ import { View, TextInput, TouchableOpacity, Text, StyleSheet, Image } from 'reac
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
 import Icon from 'react-native-vector-icons/Entypo'; // Importe o conjunto de ícones Ionicons
-import apiClient from '../src/api/client';
-import { useAuth } from '../src/context/AuthContext';
+import apiClient from '../api/client';
+import { useAuth } from '../context/AuthContext';
 
 
 const LoginScreen = () => {
@@ -51,7 +51,7 @@ const LoginScreen = () => {
       </View>
 
       <View style={styles.containerForm}>
-        <Image source={require('../assets/images/logo.png')} style={styles.logo} />
+        <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
         <Text style={styles.text}>Preencha seus dados de login</Text>
         <TextInput
           style={styles.inputtop}

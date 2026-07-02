@@ -3,7 +3,7 @@ import { StyleSheet, View, Image, Text, TouchableOpacity, Modal, ActivityIndicat
 import QRCode from 'react-native-qrcode-svg';
 import { useNavigation } from '@react-navigation/native';
 import { WebView } from 'react-native-webview';
-import apiClient from '../src/api/client';
+import apiClient from '../api/client';
 
 const PaySteps = () => {
   const [valorAPagar, setValorAPagar] = useState(0);
@@ -87,7 +87,7 @@ const PaySteps = () => {
 
   return (
     <View style={styles.container}>
-      <Image source={require('../assets/images/logo.png')} style={styles.logo} />
+      <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
       <Text style={styles.title}>Fluxo de Pagamento</Text>
 
       <View style={styles.infoContainer}>

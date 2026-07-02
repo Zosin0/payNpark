@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, StyleSheet, View, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
-import { useAuth } from '../src/context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 
 
 const LogoutScreen = () => {
@@ -15,7 +15,7 @@ const LogoutScreen = () => {
 
     return (
         <View style={styles.container}>
-            <Image source={require('../assets/images/logo.png')} style={styles.logo} />
+            <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
             <Button title="Logout" onPress={handleLogout} style={styles.button} />
         </View>
     );

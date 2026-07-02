@@ -6,7 +6,7 @@ import MenuHamburger from '../components/MenuHamburger';
 import CenteredFooter from '../components/Footer';
 import QRCode from 'react-native-qrcode-svg';
 import * as Location from 'expo-location';
-import apiClient from '../src/api/client';
+import apiClient from '../api/client';
 
 const Home = () => {
   const navigation = useNavigation();
@@ -111,7 +111,7 @@ const Home = () => {
         <Text style={styles.vehiclesTitle}>Meus Carros</Text>
         {vehicles.map((vehicle) => (
           <View key={vehicle.id} style={styles.vehicleItem}>
-            <Image style={styles.vehicleIcon} source={require('../assets/images/carro.png')} />
+            <Image style={styles.vehicleIcon} source={require('../../assets/images/carro.png')} />
             <Text style={styles.vehicleText}>{vehicle.name} - {vehicle.placa}</Text>
           </View>
         ))}

@@ -3,7 +3,7 @@ import { View, TextInput, TouchableOpacity, Text, StyleSheet, Image } from 'reac
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
 import Icon from 'react-native-vector-icons/Entypo';
-import apiClient from '../src/api/client';
+import apiClient from '../api/client';
 
 const RegisterScreen = ({  }) => {
   const [email, setEmail] = useState('');

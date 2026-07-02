@@ -4,7 +4,7 @@ import { WebView } from 'react-native-webview';
 import * as Location from 'expo-location';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import apiClient from '../src/api/client';
+import apiClient from '../api/client';
 
 const MapScreen = () => {
   const [location, setLocation] = useState(null);
@@ -131,7 +131,7 @@ const MapScreen = () => {
         >
           {vehicles.map(vehicle => (
             <TouchableOpacity key={vehicle.id} onPress={() => setSelectedVehicle(vehicle)} style={styles.vehicleItem}>
-              <Image source={require('../assets/images/carro.png')} style={styles.vehicleIcon} />
+              <Image source={require('../../assets/images/carro.png')} style={styles.vehicleIcon} />
               <Text style={styles.vehicleName}>{vehicle.name}</Text>
             </TouchableOpacity>
           ))}

@@ -13,7 +13,7 @@ const SessaoEstacionamentoQrCode = ({ navigation }) => {
         <View style={styles.containerForm}>
             <MenuHamburger></MenuHamburger>
             <View style={styles.container}>
-                <Image source={require('../assets/images/logo.png')} style={styles.logo} />
+                <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
                 <View style={styles.containerForma}>
                     <Text style={{ fontWeight: 'bold', fontSize: 15, textAlign: 'center', marginTop: 20 }}>Resumo da sua estadia</Text>
                     <Text style={{ fontSize: 14, textAlign: 'center', marginTop: 70 }}>Valor a ser pago: R$15,00</Text>

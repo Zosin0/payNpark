@@ -33,7 +33,7 @@ const MenuHamburger = () => {
             </View>
             {isMenuOpen && (
                 <View style={styles.menuItems}>
-                    <Image source={require("../assets/images/logo.png")} style={styles.logo} />
+                    <Image source={require("../../assets/images/logo.png")} style={styles.logo} />
                     <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('HomeLoggedIn')}>
                         <Icon name="home" size={20} color={'#FFD643'} />
                         <Text style={styles.menuItemText}>Home</Text>

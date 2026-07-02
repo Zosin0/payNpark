@@ -4,7 +4,7 @@ import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import * as Location from 'expo-location';
 import MenuHamburger from '../components/MenuHamburger';
 import CenteredFooter from '../components/Footer';
-import apiClient from '../src/api/client';
+import apiClient from '../api/client';
 
 const SessionScreen = ({ navigation }) => {
     const [vehicleLocation, setVehicleLocation] = useState(null);
@@ -54,7 +54,7 @@ const SessionScreen = ({ navigation }) => {
         <View style={styles.container}>
             <MenuHamburger />
             <View style={styles.content}>
-                <Image source={require('../assets/images/logo.png')} style={styles.logo} />
+                <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
                 <Text style={styles.title}>Sessão de Estacionamento</Text>
                 <TouchableOpacity style={styles.buttonBlack} onPress={startParkingSession}>
                     <FontAwesomeIcon name="car" size={20} color="white" style={styles.icon} />

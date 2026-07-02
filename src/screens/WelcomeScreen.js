@@ -5,9 +5,9 @@ import { Button } from 'react-native-paper';
 const WelcomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <ImageBackground blurRadius={2} source={require('../assets/images/background_img.jpeg')} resizeMode="cover" style={styles.background}>
+      <ImageBackground blurRadius={2} source={require('../../assets/images/background_img.jpeg')} resizeMode="cover" style={styles.background}>
         <View style={styles.content}>
-          <Image source={require('../assets/images/logo.png')} style={styles.logo} />
+          <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
           <Button mode="contained" style={styles.button} labelStyle={styles.buttonText} onPress={() => navigation.navigate('Login')}>Login</Button>
           <Button mode="contained" style={styles.button} labelStyle={styles.buttonText} onPress={() => navigation.navigate('Register')}>Registre-se</Button>
         </View>
