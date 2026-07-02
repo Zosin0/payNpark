@@ -1,11 +1,23 @@
 {
   "expo": {
-    "name": "fast-ticket",
+    "name": "PayNPark",
     "slug": "fast-ticket",
     "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
     "assetBundlePatterns": [
       "**/*"
+    ],
+    "android": {
+      "package": "com.fastticket"
+    },
+    "ios": {
+      "bundleIdentifier": "com.fastticket"
+    },
+    "plugins": [
+      "expo-asset",
+      "expo-font"
     ]
-  },
-  "name": "fast-ticket"
+  }
 }
