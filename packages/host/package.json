@@ -1,0 +1,24 @@
+{
+  "name": "@zosin0/paynpark-host",
+  "version": "0.1.0",
+  "description": "Native Android host project and Expo config plugin for the PayNPark mobile app.",
+  "main": "app.plugin.js",
+  "files": [
+    "app.plugin.js",
+    "src",
+    "android",
+    "README.md"
+  ],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Zosin0/payNpark.git",
+    "directory": "packages/host"
+  },
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@expo/config-plugins": "~9.0.17"
+  }
+}
