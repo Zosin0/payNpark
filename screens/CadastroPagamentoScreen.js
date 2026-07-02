@@ -1,52 +1,39 @@
-// Tela
-import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet, Image, SafeAreaView } from 'react-native';
-import axios from 'axios';
+import React from 'react';
+import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
 import MenuHamburger from '../components/MenuHamburger';
 import CenteredFooter from '../components/Footer';
 
+// Cadastro de cartao de credito ainda nao esta implementado. O fluxo
+// anterior desta tela coletava PAN/CVV em um formulario cru e nunca
+// enviava esses dados a lugar nenhum - so descartava o estado ao sair
+// da tela. Dado de cartao nunca deve trafegar pelo backend proprio ou
+// ficar em estado React sem uma integracao real de tokenizacao (ex:
+// Checkout Pro/Bricks do Mercado Pago via WebView/SDK oficial), entao
+// por enquanto esta tela e apenas um placeholder ate essa integracao
+// existir de fato.
 const CadastroPagamentoScreen = ({ navigation }) => {
-    const [name, setName] = useState('');
-    const [cartao, setCartao] = useState('');
-    const [validade, setValidade] = useState('');
-    const [cvv, setCvv] = useState('');
-    const [cep, setCep] = useState('');
-    const [complemento, setComplemento] = useState('');
     return (
         <View style={styles.containerForm}>
-            <MenuHamburger></MenuHamburger>
+            <MenuHamburger />
             <View style={styles.container}>
                 <View style={styles.head}>
-                    <Icon name="user" size={55} color={'#FFD643'} children={<Text style={styles.sla}></Text>} />
-                    <Text style={{ fontWeight: 'bold', fontSize: 20 }}>informações de Pagamento</Text>
+                    <Icon name="credit-card" size={55} color={'#FFD643'} />
+                    <Text style={styles.title}>Formas de pagamento</Text>
                 </View>
-                <Text>Nome Completo</Text>
-                <TextInput style={styles.input} placeholder="Nome Completo" value={name} onChangeText={setName} />
-                <Text> Número do Cartão </Text>
-                <TextInput style={styles.input} placeholder='1234 1234 1234 1234' value={cartao} onChange={setCartao} />
-                <View style={styles.containerValidade}>
-                    <View style={styles.box}>
-                        <Text> Validade </Text>
-                        <TextInput style={styles.inputDiferente} placeholder='MM/YY' value={validade} onChange={setValidade} />
-                    </View>
-                    <View style={styles.box}>
-                        <Text> CVV </Text>
-                        <TextInput style={styles.inputDiferente} placeholder='***' value={cvv} onChange={setCvv} />
-                    </View>
-                </View>
-                <Text> CEP de cobrança </Text>
-                <TextInput style={styles.input} placeholder='00000-000' value={cep} onChange={setCep} />
-                <Text> Complemento/ Número </Text>
-                <TextInput style={styles.input} placeholder='00000-000' value={complemento} onChange={setComplemento} />
+                <Text style={styles.message}>
+                    O cadastro de cartao esta em desenvolvimento. Em breve voce podera
+                    adicionar um cartao com checkout seguro (tokenizado) via Mercado
+                    Pago, sem que os dados do cartao passem pelo nosso backend.
+                </Text>
                 <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
-                    <Text style={styles.buttonText}>Cadastrar</Text>
+                    <Text style={styles.buttonText}>Voltar</Text>
                 </TouchableOpacity>
             </View>
-            <CenteredFooter/>
+            <CenteredFooter />
         </View>
     );
-}
+};
 
 const styles = StyleSheet.create({
     containerForm: {
@@ -58,66 +45,43 @@ const styles = StyleSheet.create({
     },
     container: {
         zIndex: -1,
-        top:-110,
+        top: -110,
         backgroundColor: '#E2E6EE',
-        padding: 15,
+        padding: 20,
         borderRadius: 20,
         width: 300,
         elevation: 5,
-        marginBottom: -45
+        marginBottom: -45,
+        alignItems: 'center',
     },
     head: {
         alignItems: 'center',
-        marginBottom: 20
+        marginBottom: 20,
     },
-    input: {
-        width: 250,
-        marginBottom: 10,
-        padding: 5,
-        borderWidth: 1,
-        borderColor: '#000',
-        borderRadius: 5,
-        marginTop: 5,
-        backgroundColor: '#BCC3D1',
+    title: {
+        fontWeight: 'bold',
+        fontSize: 20,
+        marginTop: 10,
+        textAlign: 'center',
     },
-
-    containerValidade: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: 250
+    message: {
+        fontSize: 14,
+        textAlign: 'center',
+        color: '#333',
+        marginBottom: 20,
     },
-
-    box: {
-        justifyContent: 'center',
-
-    },
-
-    inputDiferente: {
-        width: 120,
-        marginBottom: 10,
-        padding: 5,
-        borderWidth: 1,
-        borderColor: '#000',
-        borderRadius: 5,
-        marginTop: 5,
-        backgroundColor: '#BCC3D1',
-    },
-
     button: {
         backgroundColor: '#FCE77B',
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 5,
-        marginBottom: 35,
-        marginTop: 10,
-        width: '100%'
+        width: '100%',
     },
     buttonText: {
         color: '#212529',
         fontSize: 18,
-        textAlign: 'center'
+        textAlign: 'center',
     },
-
 });
 
 export default CadastroPagamentoScreen;
