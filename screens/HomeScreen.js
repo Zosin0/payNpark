@@ -7,6 +7,7 @@ import CenteredFooter from '../components/Footer';
 import QRCode from 'react-native-qrcode-svg';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import * as Location from 'expo-location';
 
 const Home = () => {
   const navigation = useNavigation();

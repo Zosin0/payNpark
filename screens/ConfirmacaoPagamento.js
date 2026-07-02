@@ -7,30 +7,6 @@ const PaymentConfirmation = () => {
   const route = useRoute();
   const { message } = route.params;
 
-  const finalizarPagamento = async () => {
-    try {
-      const token = await AsyncStorage.getItem('token');
-      const response = await axios.post(
-        'http://localhost:5000/api/v1/pagamentoConfirmado',
-        { valor: valorAPagar },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-  
-      const data = response.data;
-      if (data.success) {
-        navigation.navigate('PaymentConfirmation', { message: data.message });
-      } else {
-        console.error('Erro ao finalizar pagamento:', data.message);
-      }
-    } catch (error) {
-      console.error('Erro ao finalizar pagamento:', error);
-    }
-  };
-  
   return (
     <View style={styles.container}>
       <Text style={styles.message}>{message}</Text>
