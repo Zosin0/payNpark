@@ -2,7 +2,9 @@
 // autolinking script) is gone as of react-native 0.81 - third-party native module
 // autolinking now goes through the React Native Gradle Plugin's own settings
 // plugin instead, resolved here via an included composite build so the
-// `plugins { id(...) }` block below can find it.
+// `plugins { id(...) }` block below can find it. `pluginManagement {}` must be
+// the first statement in the file, so the path is recomputed further down for
+// the second, plain `includeBuild` (see comment there for why it's needed).
 pluginManagement {
   def reactNativeGradlePlugin = new File(
     providers.exec {
@@ -37,3 +39,14 @@ apply from: new File(["node", "--print", "require.resolve('expo/package.json')"]
 useExpoModules()
 
 include ':app'
+
+// A second, plain (non-pluginManagement) includeBuild is required here: the
+// one above only makes the settings plugin resolvable via `plugins { id(...) }`.
+// This one is what lets Gradle substitute the versionless
+// `com.facebook.react:react-native-gradle-plugin` / `com.android.tools.build:gradle`
+// buildscript classpath entries in the root build.gradle with this composite build.
+includeBuild(
+  new File(
+    ["node", "--print", "require.resolve('@react-native/gradle-plugin/package.json', { paths: [require.resolve('react-native/package.json')] })"].execute(null, rootDir).text.trim()
+  ).getParentFile().absolutePath
+)
