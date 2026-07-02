@@ -36,7 +36,7 @@ const MapScreen = () => {
 
   const fetchVehicles = async () => {
     try {
-      const response = await apiClient.get('/veiculo');
+      const response = await apiClient.get('/vehicles');
       setVehicles(response.data.vehicles);
     } catch (error) {
       console.error('Error fetching vehicles:', error);
@@ -45,7 +45,7 @@ const MapScreen = () => {
 
   const fetchEstacionamentos = async () => {
     try {
-      const response = await apiClient.get('/estacionamentos');
+      const response = await apiClient.get('/parking/lots');
       setEstacionamentos(response.data);
     } catch (error) {
       console.error('Error fetching estacionamentos:', error);

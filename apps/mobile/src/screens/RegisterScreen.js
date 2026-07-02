@@ -20,7 +20,7 @@ const RegisterScreen = ({  }) => {
         return;
       }
 
-      const response = await apiClient.post('/register', { email, password });
+      const response = await apiClient.post('/auth/register', { email, password });
       const data = response.data;
       if (data.success) {
         navigation.navigate('Login')

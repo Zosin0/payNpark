@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Image, Text, TouchableOpacity, Modal, ActivityIndicator } from 'react-native';
-import QRCode from 'react-native-qrcode-svg';
 import { useNavigation } from '@react-navigation/native';
 import { WebView } from 'react-native-webview';
 import apiClient from '../api/client';
+import { useAuth } from '../context/AuthContext';
 
 const PaySteps = () => {
+  const { login } = useAuth();
   const [valorAPagar, setValorAPagar] = useState(0);
   const [tempoPermanencia, setTempoPermanencia] = useState(0);
-  const [showQRCode, setShowQRCode] = useState(false);
-  const [qrCodeData, setQrCodeData] = useState('');
   const [loading, setLoading] = useState(false);
   const [paymentUrl, setPaymentUrl] = useState(null);
+  const [aguardandoConfirmacao, setAguardandoConfirmacao] = useState(false);
 
   const navigation = useNavigation();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await apiClient.get('/pagarEstacionamento');
+        const response = await apiClient.get('/payments/quote');
         const data = response.data;
         if (data.success) {
           setValorAPagar(data.valor);
@@ -43,10 +43,13 @@ const PaySteps = () => {
   const finalizarPagamento = async () => {
     setLoading(true);
     try {
-      const response = await apiClient.post('/pagarEstacionamento', { valor: valorAPagar });
+      const response = await apiClient.post('/payments/checkout', { valor: valorAPagar });
 
       const data = response.data;
       if (data.success) {
+        if (data.token) {
+          await login(data.token);
+        }
         setPaymentUrl(data.payment_url);
       } else {
         console.error('Erro ao finalizar pagamento:', data.message);
@@ -58,26 +61,18 @@ const PaySteps = () => {
     }
   };
 
-  const checkPaymentStatus = async () => {
-    try {
-      const response = await apiClient.get('/pagamentoConfirmado');
-      const data = response.data;
-      if (data.success) {
-        setQrCodeData(data.qr_code);
-        //setShowQRCode(true);
-        setLoading(false);
-        navigation.navigate('HomeLoggedIn', { qrCode: data.qr_code }); // Navega para a tela inicial com o QR code
-      }
-    } catch (error) {
-      console.error('Erro ao verificar status do pagamento:', error);
-      setLoading(false);
-    }
+  // A confirmação real do pagamento vem do webhook assíncrono do Mercado Pago
+  // (POST /api/v1/payments/webhook), não deste redirect - aqui só avisamos
+  // o usuário que o pagamento está em processamento.
+  const handlePaymentRedirect = () => {
+    setPaymentUrl(null);
+    setLoading(false);
+    setAguardandoConfirmacao(true);
   };
 
   const handleNavigationStateChange = (navState) => {
-    if (navState.url.includes('pagamentoConfirmado')) {
-      setPaymentUrl(null);
-      checkPaymentStatus();
+    if (navState.url.includes('/payments/success') || navState.url.includes('/payments/failure')) {
+      handlePaymentRedirect();
     } else if (navState.url === 'about:blank' || navState.url === 'about:srcdoc') {
       setPaymentUrl(null);
     }
@@ -111,17 +106,17 @@ const PaySteps = () => {
           />
         </Modal>
       )}
-      {showQRCode && (
+      {aguardandoConfirmacao && (
         <Modal
           animationType="slide"
           transparent={true}
-          visible={showQRCode}
-          onRequestClose={() => setShowQRCode(false)}
+          visible={aguardandoConfirmacao}
+          onRequestClose={() => setAguardandoConfirmacao(false)}
         >
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
-              <QRCode value={qrCodeData} size={250} />
-              <TouchableOpacity style={styles.closeButton} onPress={() => setShowQRCode(false)}>
+              <Text>Pagamento em processamento. Você será notificado assim que for confirmado.</Text>
+              <TouchableOpacity style={styles.closeButton} onPress={() => setAguardandoConfirmacao(false)}>
                 <Text style={styles.closeButtonText}>Fechar</Text>
               </TouchableOpacity>
             </View>

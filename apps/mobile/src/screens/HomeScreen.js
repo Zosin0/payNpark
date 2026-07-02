@@ -1,39 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet, Image, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import MenuHamburger from '../components/MenuHamburger';
 import CenteredFooter from '../components/Footer';
-import QRCode from 'react-native-qrcode-svg';
 import * as Location from 'expo-location';
 import apiClient from '../api/client';
+import { useAuth } from '../context/AuthContext';
 
 const Home = () => {
   const navigation = useNavigation();
-  const route = useRoute();
-  const [qrCode, setQrCode] = useState(null);
+  const { login } = useAuth();
   const [vehicleLocation, setVehicleLocation] = useState(null);
-  const [isQrCodeRead, setIsQrCodeRead] = useState(false);
   const [vehicles, setVehicles] = useState([]);
 
   useEffect(() => {
     fetchVehicles();
-
-    if (route.params?.qrCode) {
-      setQrCode(route.params.qrCode);
-      setIsQrCodeRead(false);
-    }
-  }, [route.params?.qrCode]);
-
-  const handleReadQrCode = () => {
-    setIsQrCodeRead(true);
-  };
-
-
+  }, []);
 
   const fetchVehicles = async () => {
     try {
-      const response = await apiClient.get('/veiculo');
+      const response = await apiClient.get('/vehicles');
       setVehicles(response.data.vehicles);
     } catch (error) {
       console.error('Error fetching vehicles:', error);
@@ -70,10 +57,10 @@ const Home = () => {
   const startParkingSession = async () => {
     const brazilDateTime = new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
     try {
-      const response = await apiClient.post('/salvarQRCode', { brazilDateTime });
+      const response = await apiClient.post('/parking/sessions', { brazilDateTime });
       const data = response.data;
       if (data.success) {
-        setQrCode(data.qr_code);
+        await login(data.token);
         navigation.navigate('PayStep');
       } else {
         console.error('Erro ao iniciar sessão:', data.message);
@@ -88,14 +75,6 @@ const Home = () => {
       <MenuHamburger />
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Bem-vindo ao Park&Pay</Text>
-        {!isQrCodeRead && qrCode && (
-          <>
-            <QRCode value={qrCode} size={150} style={styles.qrCode} />
-            <TouchableOpacity style={styles.readButton} onPress={handleReadQrCode}>
-              <Text style={styles.readButtonText}>Simular Leitura do QR Code</Text>
-            </TouchableOpacity>
-          </>
-        )}
       </View>
       <View style={styles.topBar}>
         <Text style={styles.headerText}>Você está no estacionamento { }</Text>

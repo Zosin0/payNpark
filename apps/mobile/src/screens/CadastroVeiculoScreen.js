@@ -14,7 +14,7 @@ const CadastroVeiculoScreen = ({ navigation }) => {
 
     const handleSubmit = async () => {
         try {
-            const response = await apiClient.post('/veiculo', {
+            const response = await apiClient.post('/vehicles', {
                 name, placa, marca, modelo, ano
             });
             if (response.data.success) {

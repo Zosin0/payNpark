@@ -17,10 +17,10 @@ const LoginScreen = () => {
   const handleLogin = async () => {
 
     try {
-      const response = await apiClient.post('/login', { email, password });
+      const response = await apiClient.post('/auth/login', { email, password });
       const data = response.data;
       if (data.success) {
-        await login(data.token);
+        await login(data.access_token);
         navigation.navigate('HomeLoggedIn');
       } else {
         console.error('Erro ao logar:', data.message);

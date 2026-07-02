@@ -13,7 +13,7 @@ const EstacionamentosScreen = () => {
 
   const fetchData = async () => {
     try {
-      const response = await apiClient.get('/estacionamentos');
+      const response = await apiClient.get('/parking/lots');
       const data = response.data;
       setEstacionamentos(data);
     } catch (error) {
@@ -23,7 +23,7 @@ const EstacionamentosScreen = () => {
 
   const renderItem = ({ item }) => (
     <View style={styles.item}>
-      <Text style={styles.title}>{item}</Text>
+      <Text style={styles.title}>{item.nome}</Text>
     </View>
   );
 

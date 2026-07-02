@@ -5,17 +5,20 @@ import * as Location from 'expo-location';
 import MenuHamburger from '../components/MenuHamburger';
 import CenteredFooter from '../components/Footer';
 import apiClient from '../api/client';
+import { useAuth } from '../context/AuthContext';
 
 const SessionScreen = ({ navigation }) => {
+    const { login } = useAuth();
     const [vehicleLocation, setVehicleLocation] = useState(null);
 
     const startParkingSession = async () => {
         const brazilDateTime = new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
         try {
-            const response = await apiClient.post('/salvarQRCode', { brazilDateTime });
+            const response = await apiClient.post('/parking/sessions', { brazilDateTime });
             const data = response.data;
             if (data.success) {
-                navigation.navigate('PayStep', { qrCode: data.qr_code });
+                await login(data.token);
+                navigation.navigate('PayStep');
             } else {
                 console.error('Erro ao iniciar sessão:', data.message);
             }
