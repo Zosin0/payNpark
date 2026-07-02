@@ -18,7 +18,9 @@
     "plugins": [
       "expo-asset",
       "expo-font",
-      "@zosin0/paynpark-host"
+      "@zosin0/paynpark-host",
+      "expo-secure-store",
+      "expo-web-browser"
     ]
   }
 }
