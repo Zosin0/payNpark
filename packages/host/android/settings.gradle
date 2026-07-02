@@ -1,3 +1,26 @@
+// `@react-native-community/cli-platform-android` (and its `native_modules.gradle`
+// autolinking script) is gone as of react-native 0.81 - third-party native module
+// autolinking now goes through the React Native Gradle Plugin's own settings
+// plugin instead, resolved here via an included composite build so the
+// `plugins { id(...) }` block below can find it.
+pluginManagement {
+  def reactNativeGradlePlugin = new File(
+    providers.exec {
+      workingDir(rootDir)
+      commandLine("node", "--print", "require.resolve('@react-native/gradle-plugin/package.json', { paths: [require.resolve('react-native/package.json')] })")
+    }.standardOutput.asText.get().trim()
+  ).getParentFile().absolutePath
+  includeBuild(reactNativeGradlePlugin)
+}
+
+plugins {
+  id("com.facebook.react.settings")
+}
+
+extensions.configure(com.facebook.react.ReactSettingsExtension) { ex ->
+  ex.autolinkLibrariesFromCommand()
+}
+
 rootProject.name = 'fastticket'
 
 dependencyResolutionManagement {
@@ -8,11 +31,9 @@ dependencyResolutionManagement {
   }
 }
 
+// Expo modules (expo-location, expo-secure-store, etc.) autolink separately
+// from plain React Native native modules, still through Expo's own script.
 apply from: new File(["node", "--print", "require.resolve('expo/package.json')"].execute(null, rootDir).text.trim(), "../scripts/autolinking.gradle");
 useExpoModules()
 
-apply from: new File(["node", "--print", "require.resolve('@react-native-community/cli-platform-android/package.json', { paths: [require.resolve('react-native/package.json')] })"].execute(null, rootDir).text.trim(), "../native_modules.gradle");
-applyNativeModulesSettingsGradle(settings)
-
 include ':app'
-includeBuild(new File(["node", "--print", "require.resolve('@react-native/gradle-plugin/package.json', { paths: [require.resolve('react-native/package.json')] })"].execute(null, rootDir).text.trim()).getParentFile())
