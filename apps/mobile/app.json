@@ -20,7 +20,13 @@
       "expo-font",
       "@zosin0/paynpark-host",
       "expo-secure-store",
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "O PayNPark usa a câmera para ler o QR code do estacionamento."
+        }
+      ]
     ]
   }
 }
