@@ -1,0 +1,117 @@
+name: host-pipeline
+
+# CI/CD for packages/host (@zosin0/paynpark-host): the publishable
+# native Android host package. Kept as a single workflow with three
+# jobs (test -> build -> publish) linked via `needs` rather than three
+# separate workflow files, so the trigger conditions and the pipeline
+# stages live in one place instead of being duplicated three times.
+on:
+  push:
+    branches:
+      - '**'
+    tags:
+      - 'host-v*'
+    paths:
+      - 'packages/host/**'
+      - '.github/workflows/host-pipeline.yml'
+  pull_request:
+    paths:
+      - 'packages/host/**'
+      - '.github/workflows/host-pipeline.yml'
+  release:
+    types: [published]
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install workspace dependencies
+        run: npm ci
+
+      - name: Lint packages/host
+        run: npm run lint --workspace packages/host
+
+      - name: Unit tests for host glue JS
+        run: npm test --workspace packages/host --if-present
+
+  build:
+    name: Build Android
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install workspace dependencies
+        run: npm ci
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Make gradlew executable
+        working-directory: packages/host/android
+        run: chmod +x ./gradlew
+
+      # packages/host/android is a real (already prebuilt) native project,
+      # not regenerated from scratch here - it is built directly with
+      # Gradle. See packages/host/README.md for why `expo prebuild` isn't
+      # part of this build path yet.
+      - name: Build release APK
+        working-directory: packages/host/android
+        run: ./gradlew assembleRelease --no-daemon
+
+      - name: Upload release APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: paynpark-host-release-apk
+          path: packages/host/android/app/build/outputs/apk/release/*.apk
+          if-no-files-found: error
+          retention-days: 14
+
+  publish:
+    name: Publish to GitHub Packages
+    needs: [test, build]
+    if: startsWith(github.ref, 'refs/tags/host-v') || github.event_name == 'release'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          registry-url: https://npm.pkg.github.com
+          scope: '@zosin0'
+
+      - name: Install workspace dependencies
+        run: npm ci
+
+      - name: Publish @zosin0/paynpark-host
+        working-directory: .
+        run: npm publish --workspace packages/host
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
